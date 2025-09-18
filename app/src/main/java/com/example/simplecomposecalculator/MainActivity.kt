@@ -16,6 +16,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -29,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -43,7 +46,8 @@ import androidx.compose.ui.text.input.ImeAction
 //colors
 import com.example.simplecomposecalculator.ui.theme.TipGreen
 import com.example.simplecomposecalculator.ui.theme.TipBlue
-import com.example.simplecomposecalculator.ui.theme.TipBrown
+import com.example.simplecomposecalculator.ui.theme.TipOrange
+import com.example.simplecomposecalculator.ui.theme.LightGray
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,14 +67,15 @@ fun TipCalculatorApp() {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .background(LightGray)
         ) {
             TipCalculator(
                 amount = 100.0,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.fillMaxSize(),
                 onClick = { percentage ->
                     tip = 100 * percentage / 100.0
                 }
@@ -97,6 +102,7 @@ fun TipCalculator( amount: Double, modifier: Modifier = Modifier , onClick: (Int
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         // Results
         Box(
             modifier = Modifier
@@ -118,22 +124,30 @@ fun TipCalculator( amount: Double, modifier: Modifier = Modifier , onClick: (Int
             }
         }
 
-        // Amount
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(stringResource(R.string.amount))
-            Text("$currencySymbol $amount")
-        }
+        
+        // Amount and Tip Card
+        Card (
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        ){
+            // Amount
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(stringResource(R.string.amount))
+                Text("$currencySymbol $amount")
+            }
 
-        // Tip amount
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(stringResource(R.string.tip))
-            Text( text = "$currencySymbol ${String.format(Locale.getDefault(), "%.2f", tip)}",)
+            // Tip amount
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(stringResource(R.string.tip))
+                Text( text = "$currencySymbol ${String.format(Locale.getDefault(), "%.2f", tip)}",)
+            }
         }
 
         Box(
@@ -143,13 +157,19 @@ fun TipCalculator( amount: Double, modifier: Modifier = Modifier , onClick: (Int
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp) // rounded top corners
+                )
+                .shadow(
+                    elevation = 2.dp,
+                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                 ),
+
             contentAlignment = Alignment.TopCenter
         ){
             // Tip Percentage
             Column(
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
+
             ){
                 Text(stringResource(R.string.tip_percentage))
 
@@ -191,7 +211,7 @@ fun TipCalculator( amount: Double, modifier: Modifier = Modifier , onClick: (Int
                     FilledTonalButton(
                         modifier = Modifier.fillMaxWidth().padding(4.dp),
                         onClick = { selectedTip = null },
-                        colors = ButtonDefaults.buttonColors(containerColor = TipBrown)
+                        colors = ButtonDefaults.buttonColors(containerColor = TipOrange)
                     ){
                         Text(stringResource(R.string.custom), color = Color.White )
                     }
@@ -205,10 +225,7 @@ fun TipCalculator( amount: Double, modifier: Modifier = Modifier , onClick: (Int
                             onClick(customTip.toIntOrNull() ?: 0)
                         },
                         label = { Text(stringResource(R.string.enter_percentage)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
-                        ),
+                        keyboardOptions = KeyboardOptions( keyboardType = KeyboardType.Number, imeAction = ImeAction.Done ),
                         keyboardActions = KeyboardActions( onDone = { keyboardController?.hide() } ),
                         modifier = Modifier
                             .fillMaxWidth()

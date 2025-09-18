@@ -13,5 +13,5 @@ val Pink40 = Color(0xFF7D5260)
 // Tip Calculator Colors
 val TipGreen = Color(0xFF4CAF50)
 val TipBlue = Color(0xFF2196F3)
-val TipBrown = Color(0xFF6D4C41)
-val TipGray = Color(0xFFE0E0E0)
+val TipOrange = Color(0xFFCC562A)
+val LightGray = Color(0xFFF5F5F5)
